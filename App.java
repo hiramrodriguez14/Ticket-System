@@ -16,7 +16,7 @@ public class App {
             System.out.print("Ingrese su email: ");
             String email = scanner.nextLine();
             System.out.print("Ingrese su teléfono: ");
-            String telefono = scanner.nextLine();
+            int telefono = scanner.nextInt();
             Cliente cliente = new Cliente(nombre, email, telefono);
 
             // Mostrar disponibilidad de secciones y precios
@@ -114,7 +114,7 @@ public class App {
     // Método auxiliar para buscar un cliente por su nombre en las reservaciones
     private static Cliente buscarClientePorNombre(Estadio estadio, String nombre) {
         for (Cliente cliente : estadio.getReservaciones().keySet()) {
-            if (cliente.getNombre().equalsIgnoreCase(nombre)) {
+            if (cliente.getName().equalsIgnoreCase(nombre)) {
                 return cliente;
             }
         }

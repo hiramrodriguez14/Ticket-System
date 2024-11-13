@@ -52,9 +52,9 @@ public class Estadio {
                         // Reservar los asientos
                         asientosDisponibles.removeAll(asientosJuntos);
                         reservaciones.put(cliente, new ArrayList<>(asientosJuntos));
-                        historialReservas.add(cliente.getNombre() + " reservó " + asientosJuntos);
+                        historialReservas.add(cliente.getName() + " reservó " + asientosJuntos);
                         accionesDeshacer.push("reserva");
-                        System.out.println("Reservación exitosa: " + cliente.getNombre() + " - " + asientosJuntos);
+                        System.out.println("Reservación exitosa: " + cliente.getName() + " - " + asientosJuntos);
                         return true;
                     }
                 } else {
@@ -70,7 +70,7 @@ public class Estadio {
         Queue<Cliente> espera = listaEspera.get(seccion);
         if (espera != null) {
             espera.add(cliente);
-            historialReservas.add(cliente.getNombre() + " añadido a la lista de espera de " + seccion);
+            historialReservas.add(cliente.getName() + " añadido a la lista de espera de " + seccion);
             accionesDeshacer.push("listaEspera");
             System.out.println("Se ha añadido a la lista de espera para la sección " + seccion);
         } else {
@@ -82,7 +82,7 @@ public class Estadio {
         List<Asiento> asientos = reservaciones.remove(cliente);
         if (asientos != null) {
             asientosDisponibles.addAll(asientos);
-            historialReservas.add(cliente.getNombre() + " canceló " + asientos);
+            historialReservas.add(cliente.getName() + " canceló " + asientos);
             accionesDeshacer.push("cancelación");
 
             // Verificar si hay alguien en la lista de espera para cada asiento liberado
@@ -93,14 +93,14 @@ public class Estadio {
                 // Intentar reservar los mismos asientos para el siguiente cliente
                 boolean reservaExitosa = reservarAsientosJuntos(siguiente, seccion, asientos.size());
                 if (reservaExitosa) {
-                    System.out.println("Se ha reservado automáticamente para " + siguiente.getNombre() + " desde la lista de espera.");
+                    System.out.println("Se ha reservado automáticamente para " + siguiente.getName() + " desde la lista de espera.");
                 } else {
                     // Si no se pueden reservar los mismos asientos, volver a añadir a la lista de espera
                     agregarAListaEspera(siguiente, seccion);
                 }
             }
         } else {
-            System.out.println("No se encontró una reservación para " + cliente.getNombre());
+            System.out.println("No se encontró una reservación para " + cliente.getName());
         }
     }
 
