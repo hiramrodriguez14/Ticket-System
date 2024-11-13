@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 
+
 public class Cliente {
 
     // private stuff to use for Cliente
@@ -27,6 +28,22 @@ public class Cliente {
 
     public void setPhoneNum(int phoneNum) {this.phoneNum = phoneNum;}
 
+ 
+    public boolean equals(Cliente cliente) {
+       if((this.getEmail()==cliente.getEmail())&&(this.getName()==cliente.getName())&&(this.getPhoneNum()==cliente.getPhoneNum())){
+           return true;
+    }
+    return false;
+    }
+
+    @Override
+    public int hashCode() {
+        if(email!=null){
+            return email.hashCode(); //Returns the hashCode of the email string
+        }else{
+            return 0;
+        }
+    }
     // main method
     public static void main(String[] args) {
 
