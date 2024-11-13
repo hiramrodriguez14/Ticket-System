@@ -1,147 +1,147 @@
 import java.util.*;
 
 public class Estadio {
-    private Set<Asiento> asientosDisponibles = new HashSet<>();
-    private Map<Cliente, List<Asiento>> reservaciones = new HashMap<>();
-    private LinkedList<String> historialReservas = new LinkedList<>();
-    private Stack<String> accionesDeshacer = new Stack<>();
-    private Map<String, Queue<Cliente>> listaEspera = new HashMap<>();
+    private Set<Asiento> availableSeats = new HashSet<>();
+    private Map<Cliente, List<Asiento>> reservations = new HashMap<>();
+    private LinkedList<String> reservationHistory = new LinkedList<>();
+    private Stack<String> actionsUndo = new Stack<>();
+    private Map<String, Queue<Cliente>> waitList = new HashMap<>();
 
     public Estadio() {
-        // Inicializar los asientos del estadio en cada sección
-        inicializarAsientos("Field Level", 10, 50);
-        inicializarAsientos("Main Level", 20, 50);
-        inicializarAsientos("Grandstand Level", 40, 50);
+        // initialize seats from estadio on each section
+        initializeSeats("Field Level", 10, 50);
+        initializeSeats("Main Level", 20, 50);
+        initializeSeats("Grandstand Level", 40, 50);
 
-        // Inicializar listas de espera por sección
-        listaEspera.put("Field Level", new LinkedList<>());
-        listaEspera.put("Main Level", new LinkedList<>());
-        listaEspera.put("Grandstand Level", new LinkedList<>());
+        // initialize listas de espera por seccion
+        waitList.put("Field Level", new LinkedList<>());
+        waitList.put("Main Level", new LinkedList<>());
+        waitList.put("Grandstand Level", new LinkedList<>());
     }
 
-    private void inicializarAsientos(String seccion, int filas, int asientosPorFila) {
-        for (int f = 1; f <= filas; f++) {
-            for (int a = 1; a <= asientosPorFila; a++) {
-                asientosDisponibles.add(new Asiento(seccion, f, a));
+    private void initializeSeats(String section, int rows, int seatsPerRow) {
+        for (int f = 1; f <= rows; f++) {
+            for (int a = 1; a <= seatsPerRow; a++) {
+                availableSeats.add(new Asiento(section, f, a));
             }
         }
     }
 
-    public boolean reservarAsientosJuntos(Cliente cliente, String seccion, int cantidad) {
-        // Organizar los asientos disponibles por fila
-        Map<Integer, List<Asiento>> asientosPorFila = new HashMap<>();
-        for (Asiento asiento : asientosDisponibles) {
-            if (asiento.getSeccion().equals(seccion)) {
-                asientosPorFila
-                    .computeIfAbsent(asiento.getFila(), k -> new ArrayList<>())
-                    .add(asiento);
+    public boolean reserveJointSeats(Cliente client, String section, int quantity) {
+        // organizar available seats per row
+        Map<Integer, List<Asiento>> seatsPerRow = new HashMap<>();
+        for (Asiento seat : availableSeats) {
+            if (seat.getsection().equals(section)) {
+                seatsPerRow
+                    .computeIfAbsent(seat.getFila(), k -> new ArrayList<>())
+                    .add(seat);
             }
         }
 
-        // Buscar una fila con suficientes asientos juntos
-        for (Map.Entry<Integer, List<Asiento>> entry : asientosPorFila.entrySet()) {
-            List<Asiento> filaAsientos = entry.getValue();
-            filaAsientos.sort(Comparator.comparingInt(Asiento::getNumero));
+        // buscar fila con enough seats together
+        for (Map.Entry<Integer, List<Asiento>> entry : seatsPerRow.entrySet()) {
+            List<Asiento> rowSeats = entry.getValue();
+            rowSeats.sort(Comparator.comparingInt(Asiento::getNumero));
 
-            List<Asiento> asientosJuntos = new ArrayList<>();
-            for (int i = 0; i < filaAsientos.size(); i++) {
-                Asiento asientoActual = filaAsientos.get(i);
-                if (asientosJuntos.isEmpty() || asientoActual.getNumero() == asientosJuntos.get(asientosJuntos.size() - 1).getNumero() + 1) {
-                    asientosJuntos.add(asientoActual);
-                    if (asientosJuntos.size() == cantidad) {
-                        // Reservar los asientos
-                        asientosDisponibles.removeAll(asientosJuntos);
-                        reservaciones.put(cliente, new ArrayList<>(asientosJuntos));
-                        historialReservas.add(cliente.getNombre() + " reservó " + asientosJuntos);
-                        accionesDeshacer.push("reserva");
-                        System.out.println("Reservación exitosa: " + cliente.getNombre() + " - " + asientosJuntos);
+            List<Asiento> jointSeats = new ArrayList<>();
+            for (int i = 0; i < rowSeats.size(); i++) {
+                Asiento currentSeat = rowSeats.get(i);
+                if (jointSeats.isEmpty() || currentSeat.getNumero() == jointSeats.get(jointSeats.size() - 1).getNumero() + 1) {
+                    jointSeats.add(currentSeat);
+                    if (jointSeats.size() == quantity) {
+                        // reserve seats
+                        availableSeats.removeAll(jointSeats);
+                        reservations.put(client, new ArrayList<>(jointSeats));
+                        reservationHistory.add(client.getName() + " reservó " + jointSeats);
+                        actionsUndo.push("reserva");
+                        System.out.println("Reservación exitosa: " + client.getName() + " - " + jointSeats);
                         return true;
                     }
                 } else {
-                    asientosJuntos.clear();
-                    asientosJuntos.add(asientoActual);
+                    jointSeats.clear();
+                    jointSeats.add(currentSeat);
                 }
             }
         }
-        return false; // No se encontraron suficientes asientos juntos
+        return false; // no se encontraron enough joint seats
     }
 
-    public void agregarAListaEspera(Cliente cliente, String seccion) {
-        Queue<Cliente> espera = listaEspera.get(seccion);
-        if (espera != null) {
-            espera.add(cliente);
-            historialReservas.add(cliente.getNombre() + " añadido a la lista de espera de " + seccion);
-            accionesDeshacer.push("listaEspera");
-            System.out.println("Se ha añadido a la lista de espera para la sección " + seccion);
+    public void agregarAwaitList(Cliente client, String section) {
+        Queue<Cliente> wait = waitList.get(section);
+        if (wait != null) {
+            wait.add(client);
+            reservationHistory.add(client.getName() + " añadido a la lista de wait de " + section);
+            actionsUndo.push("waitList");
+            System.out.println("Se ha añadido a la lista de wait para la sección " + section);
         } else {
             System.out.println("La sección especificada no existe.");
         }
     }
 
-    public void cancelarReservacion(Cliente cliente) {
-        List<Asiento> asientos = reservaciones.remove(cliente);
-        if (asientos != null) {
-            asientosDisponibles.addAll(asientos);
-            historialReservas.add(cliente.getNombre() + " canceló " + asientos);
-            accionesDeshacer.push("cancelación");
+    public void cancelReservation(Cliente client) {
+        List<Asiento> seats = reservations.remove(client);
+        if (seats != null) {
+            availableSeats.addAll(seats);
+            reservationHistory.add(client.getName() + " canceló " + seats);
+            actionsUndo.push("cancelación");
 
-            // Verificar si hay alguien en la lista de espera para cada asiento liberado
-            String seccion = asientos.get(0).getSeccion();
-            Queue<Cliente> espera = listaEspera.get(seccion);
-            if (espera != null && !espera.isEmpty()) {
-                Cliente siguiente = espera.poll();
-                // Intentar reservar los mismos asientos para el siguiente cliente
-                boolean reservaExitosa = reservarAsientosJuntos(siguiente, seccion, asientos.size());
-                if (reservaExitosa) {
-                    System.out.println("Se ha reservado automáticamente para " + siguiente.getNombre() + " desde la lista de espera.");
+            // verificar si hay alguien en la lista de wait para cada asiento liberado
+            String section = seats.get(0).getsection();
+            Queue<Cliente> wait = waitList.get(section);
+            if (wait != null && !wait.isEmpty()) {
+                Cliente next = wait.poll();
+                // Intentar reservar los mismos seats para el next cliente
+                boolean reserveSucceed = reserveJointSeats(next, section, seats.size());
+                if (reserveSucceed) {
+                    System.out.println("Se ha reservado automáticamente para " + next.getName() + " desde la lista de wait.");
                 } else {
-                    // Si no se pueden reservar los mismos asientos, volver a añadir a la lista de espera
-                    agregarAListaEspera(siguiente, seccion);
+                    // Si no se pueden reservar los mismos seats, volver a añadir a la lista de wait
+                    agregarAwaitList(next, section);
                 }
             }
         } else {
-            System.out.println("No se encontró una reservación para " + cliente.getNombre());
+            System.out.println("No se encontró una reservación para " + client.getName());
         }
     }
 
-    public void verDisponibilidad() {
-        System.out.println("Asientos disponibles por sección:");
-        Map<String, Integer> disponibilidad = new HashMap<>();
-        for (Asiento asiento : asientosDisponibles) {
-            disponibilidad.put(asiento.getSeccion(), disponibilidad.getOrDefault(asiento.getSeccion(), 0) + 1);
+    public void veravailability() {
+        System.out.println("seats disponibles por sección:");
+        Map<String, Integer> availability = new HashMap<>();
+        for (Asiento seat : availableSeats) {
+            availability.put(seat.getsection(), availability.getOrDefault(seat.getsection(), 0) + 1);
         }
-        disponibilidad.forEach((seccion, cantidad) -> System.out.println(seccion + ": " + cantidad + " asientos"));
+        availability.forEach((section, quantity) -> System.out.println(section + ": " + quantity + " seats"));
     }
 
-    public void mostrarHistorialReservas() {
-        System.out.println("Historial de reservaciones:");
-        historialReservas.forEach(System.out::println);
+    public void showReservationHistory() {
+        System.out.println("Historial de reservations:");
+        reservationHistory.forEach(System.out::println);
     }
 
-    public void deshacerUltimaAccion() {
-        if (accionesDeshacer.isEmpty()) {
+    public void undoLastAction() {
+        if (actionsUndo.isEmpty()) {
             System.out.println("No hay acciones para deshacer.");
             return;
         }
-        String ultimaAccion = accionesDeshacer.pop();
-        if (ultimaAccion.equals("reserva") && !historialReservas.isEmpty()) {
-            String ultimaReserva = historialReservas.pollLast();
+        String lastAction = actionsUndo.pop();
+        if (lastAction.equals("reserva") && !reservationHistory.isEmpty()) {
+            String lastReserved = reservationHistory.pollLast();
             // Aquí se debe parsear el historial para obtener el cliente
             // Esto requiere una implementación más detallada
-            System.out.println("Deshacer última reserva: " + ultimaReserva);
+            System.out.println("Deshacer última reserva: " + lastReserved);
             // Implementar la lógica de deshacer según las necesidades
-        } else if (ultimaAccion.equals("cancelación")) {
+        } else if (lastAction.equals("cancelación")) {
             // Lógica para deshacer una cancelación
             System.out.println("Deshacer última cancelación.");
             // Implementar la lógica de deshacer según las necesidades
-        } else if (ultimaAccion.equals("listaEspera")) {
-            // Lógica para deshacer la adición a la lista de espera
-            System.out.println("Deshacer última adición a lista de espera.");
+        } else if (lastAction.equals("waitList")) {
+            // Lógica para deshacer la adición a la lista de wait
+            System.out.println("Deshacer última adición a lista de wait.");
             // Implementar la lógica de deshacer según las necesidades
         }
     }
 
-    public Map<Cliente, List<Asiento>> getReservaciones() {
-        return reservaciones;
+    public Map<Cliente, List<Asiento>> getreservations() {
+        return reservations;
     }
 }
