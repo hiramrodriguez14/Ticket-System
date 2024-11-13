@@ -4,88 +4,88 @@ public class App {
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        Estadio estadio = new Estadio();
-        boolean continuar = true;
+        Estadio stadium = new Estadio();
+        boolean valid = true;
 
-        System.out.println("Bienvenido al sistema de reservación del Estadio");
+        System.out.println("Welcome to the ticket system for the baseball game at the stadium.");
 
-        while (continuar) {
-            // Solicitar datos del cliente
-            System.out.print("\nIngrese su nombre: ");
-            String nombre = scanner.nextLine();
-            System.out.print("Ingrese su email: ");
+        while (valid) {
+            // Ask user data
+            System.out.print("\nEnter name: ");
+            String name = scanner.nextLine();
+            System.out.print("Enter email: ");
             String email = scanner.nextLine();
-            System.out.print("Ingrese su teléfono: ");
-            int telefono = scanner.nextInt();
-            Cliente cliente = new Cliente(nombre, email, telefono);
+            System.out.print("Enter phone number: ");
+            int phoneNumber = scanner.nextInt();
+            Cliente client = new Cliente(name, email, phoneNumber);
 
             // Mostrar disponibilidad de secciones y precios
-            System.out.println("\nSecciones disponibles y costo por asiento:");
-            estadio.verDisponibilidad();
-            System.out.println("Precios: Field Level - $50, Main Level - $30, Grandstand Level - $20");
+            System.out.println("\nAvailable sections and seats price:");
+            stadium.verDisponibilidad();
+            System.out.println("Prices: Field Level - $50, Main Level - $30, Grandstand Level - $20");
 
             // Preguntar la sección de interés
-            System.out.print("\n¿En qué sección le gustaría reservar? ");
-            String seccion = scanner.nextLine();
+            System.out.print("\nIn what section would you like to reserve? ");
+            String section = scanner.nextLine();
 
             // Validar la sección
-            if (!esSeccionValida(seccion)) {
-                System.out.println("La sección ingresada no es válida. Inténtelo de nuevo.");
+            if (!esSeccionValida(section)) {
+                System.out.println("The section entered is not valid. Please try again.");
                 continue;
             }
 
             // Solicitar la cantidad de asientos juntos que necesita
-            System.out.print("¿Cuántos asientos necesita juntos? ");
-            int cantidadAsientos;
+            System.out.print("Enter the number of seats you would like to reserve: ");
+            int seatsQuantity;
             try {
-                cantidadAsientos = Integer.parseInt(scanner.nextLine());
-                if (cantidadAsientos <= 0) {
-                    System.out.println("La cantidad de asientos debe ser mayor que cero.");
+                seatsQuantity = Integer.parseInt(scanner.nextLine());
+                if (seatsQuantity <= 0) {
+                    System.out.println("The number of seats must be greater than 0.");
                     continue;
                 }
             } catch (NumberFormatException e) {
-                System.out.println("Entrada inválida para la cantidad de asientos.");
+                System.out.println("The number of seats entered is not valid. Please try again.");
                 continue;
             }
 
             // Intentar reservar los asientos juntos en la sección deseada
-            boolean reservaExitosa = estadio.reservarAsientosJuntos(cliente, seccion, cantidadAsientos);
+            boolean revervationSuccesful = stadium.reservarAsientosJuntos(client, section, seatsQuantity);
 
-            if (reservaExitosa) {
-                int precio = obtenerPrecioPorSeccion(seccion);
-                System.out.println("Reservación exitosa. Costo total: $" + (precio * cantidadAsientos));
+            if (revervationSuccesful) {
+                int price = obtenerPrecioPorSeccion(section);
+                System.out.println("Reservation succesful, total cost: " + (price * seatsQuantity));
             } else {
                 // Opción de lista de espera si no hay asientos disponibles
-                System.out.print("No hay asientos juntos disponibles en esta sección. ¿Desea unirse a la lista de espera? (S/N): ");
-                String respuesta = scanner.nextLine();
-                if (respuesta.equalsIgnoreCase("S")) {
-                    estadio.agregarAListaEspera(cliente, seccion);
+                System.out.print("There are no seats available in the section you selected. Would you like to be added to the waiting list? (S/N): ");
+                String answer = scanner.nextLine();
+                if (answer.equalsIgnoreCase("S")) {
+                    stadium.agregarAListaEspera(client, section);
                 } else {
-                    System.out.println("Reservación cancelada.");
+                    System.out.println("Thank you for using the reservation system. Have a nice day!");
                 }
             }
 
-            // Preguntar si se desea cancelar una reservación
-            System.out.print("\n¿Desea cancelar una reservación? (S/N): ");
-            String cancelar = scanner.nextLine();
-            if (cancelar.equalsIgnoreCase("S")) {
-                System.out.print("Ingrese el nombre del cliente cuya reservación desea cancelar: ");
-                String nombreCancelar = scanner.nextLine();
-                Cliente clienteCancelar = buscarClientePorNombre(estadio, nombreCancelar);
-                if (clienteCancelar != null) {
-                    estadio.cancelarReservacion(clienteCancelar);
-                    System.out.println("Su reservación ha sido cancelada. El asiento ha sido asignado a la primera persona en lista de espera, si aplica.");
+            // Preguntar si se desea cancel una reservación
+            System.out.print("\nWould you like to cancel a reservation? (S/N): ");
+            String cancel = scanner.nextLine();
+            if (cancel.equalsIgnoreCase("S")) {
+                System.out.print("Enter the name of the person whose reservation you would like to cancel: ");
+                String nameCancel = scanner.nextLine();
+                Cliente clientCancel = buscarClientePorname(stadium, nameCancel);
+                if (clientCancel != null) {
+                    stadium.cancelReservacion(clientCancel);
+                    System.out.println("Reservation canceled successfully.");
                 } else {
-                    System.out.println("No se encontró una reservación para " + nombreCancelar);
+                    System.out.println("No reservation was found for" + nameCancel);
                 }
             }
 
-            // Preguntar si el usuario desea salir del programa
-            System.out.print("\n¿Desea salir del programa? (S/N): ");
-            String salir = scanner.nextLine();
-            if (salir.equalsIgnoreCase("S")) {
-                continuar = false;
-                System.out.println("Gracias por usar el sistema de reservaciones. ¡Hasta luego!");
+            // Preguntar si el usuario desea exit del programa
+            System.out.print("\nWould you like to exit the program? (S/N): ");
+            String exit = scanner.nextLine();
+            if (exit.equalsIgnoreCase("S")) {
+             valid = false;
+                System.out.println("Thank you for using the reservation system. Have a nice day!");
             }
         }
 
@@ -93,8 +93,8 @@ public class App {
     }
 
     // Método auxiliar para obtener el precio de acuerdo a la sección
-    private static int obtenerPrecioPorSeccion(String seccion) {
-        switch (seccion) {
+    private static int obtenerPrecioPorSeccion(String section) {
+        switch (section) {
             case "Field Level":
                 return 50;
             case "Main Level":
@@ -111,11 +111,11 @@ public class App {
         return seccion.equals("Field Level") || seccion.equals("Main Level") || seccion.equals("Grandstand Level");
     }
 
-    // Método auxiliar para buscar un cliente por su nombre en las reservaciones
-    private static Cliente buscarClientePorNombre(Estadio estadio, String nombre) {
-        for (Cliente cliente : estadio.getReservaciones().keySet()) {
-            if (cliente.getName().equalsIgnoreCase(nombre)) {
-                return cliente;
+    // Método auxiliar para buscar un cliente por su name en las reservaciones
+    private static Cliente buscarClientePorname(Estadio stadium, String name) {
+        for (Cliente client : stadium.getReservaciones().keySet()) {
+            if (client.getName().equalsIgnoreCase(name)) {
+                return client;
             }
         }
         return null;
