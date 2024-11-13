@@ -27,13 +27,14 @@ public class Estadio {
         }
     }
 
+    @SuppressWarnings("unused")
     public boolean reserveJointSeats(Cliente client, String section, int quantity) {
         // organizar available seats per row
         Map<Integer, List<Asiento>> seatsPerRow = new HashMap<>();
         for (Asiento seat : availableSeats) {
-            if (seat.getsection().equals(section)) {
+            if (seat.getSection().equals(section)) {
                 seatsPerRow
-                    .computeIfAbsent(seat.getFila(), k -> new ArrayList<>())
+                    .computeIfAbsent(seat.getRow(), k -> new ArrayList<>())
                     .add(seat);
             }
         }
@@ -41,12 +42,12 @@ public class Estadio {
         // buscar fila con enough seats together
         for (Map.Entry<Integer, List<Asiento>> entry : seatsPerRow.entrySet()) {
             List<Asiento> rowSeats = entry.getValue();
-            rowSeats.sort(Comparator.comparingInt(Asiento::getNumero));
+            rowSeats.sort(Comparator.comparingInt(Asiento::getSeatNumber));
 
             List<Asiento> jointSeats = new ArrayList<>();
             for (int i = 0; i < rowSeats.size(); i++) {
                 Asiento currentSeat = rowSeats.get(i);
-                if (jointSeats.isEmpty() || currentSeat.getNumero() == jointSeats.get(jointSeats.size() - 1).getNumero() + 1) {
+                if (jointSeats.isEmpty() || currentSeat.getSeatNumber() == jointSeats.get(jointSeats.size() - 1).getSeatNumber() + 1) {
                     jointSeats.add(currentSeat);
                     if (jointSeats.size() == quantity) {
                         // reserve seats
@@ -66,7 +67,7 @@ public class Estadio {
         return false; // no se encontraron enough joint seats
     }
 
-    public void agregarAwaitList(Cliente client, String section) {
+    public void addAwaitList(Cliente client, String section) {
         Queue<Cliente> wait = waitList.get(section);
         if (wait != null) {
             wait.add(client);
@@ -86,7 +87,7 @@ public class Estadio {
             actionsUndo.push("cancelación");
 
             // verificar si hay alguien en la lista de wait para cada asiento liberado
-            String section = seats.get(0).getsection();
+            String section = seats.get(0).getSection();
             Queue<Cliente> wait = waitList.get(section);
             if (wait != null && !wait.isEmpty()) {
                 Cliente next = wait.poll();
@@ -96,7 +97,7 @@ public class Estadio {
                     System.out.println("Se ha reservado automáticamente para " + next.getName() + " desde la lista de wait.");
                 } else {
                     // Si no se pueden reservar los mismos seats, volver a añadir a la lista de wait
-                    agregarAwaitList(next, section);
+                    addAwaitList(next, section);
                 }
             }
         } else {
@@ -104,11 +105,10 @@ public class Estadio {
         }
     }
 
-    public void veravailability() {
-        System.out.println("seats disponibles por sección:");
+    public void lookAvailability() {
         Map<String, Integer> availability = new HashMap<>();
         for (Asiento seat : availableSeats) {
-            availability.put(seat.getsection(), availability.getOrDefault(seat.getsection(), 0) + 1);
+            availability.put(seat.getSection(), availability.getOrDefault(seat.getSection(), 0) + 1);
         }
         availability.forEach((section, quantity) -> System.out.println(section + ": " + quantity + " seats"));
     }
@@ -141,7 +141,8 @@ public class Estadio {
         }
     }
 
-    public Map<Cliente, List<Asiento>> getreservations() {
+    public Map<Cliente, List<Asiento>> getReservations() {
         return reservations;
     }
+   
 }

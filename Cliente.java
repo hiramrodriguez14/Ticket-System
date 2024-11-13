@@ -6,10 +6,10 @@ public class Cliente {
     // private stuff to use for Cliente
     private String name;
     private String email;
-    private int phoneNum;
+    private String phoneNum;
 
     // constructor
-    public  Cliente(String name, String email, int phoneNum) {
+    public  Cliente(String name, String email, String phoneNum) {
         this.name = name;
         this.email = email;
         this.phoneNum = phoneNum;
@@ -24,9 +24,9 @@ public class Cliente {
 
     public void setEmail(String email) {this.email = email;}
 
-    public int getPhoneNum() {return phoneNum;}
+    public String getPhoneNum() {return phoneNum;}
 
-    public void setPhoneNum(int phoneNum) {this.phoneNum = phoneNum;}
+    public void setPhoneNum(String phoneNum) {this.phoneNum = phoneNum;}
 
  
     public boolean equals(Cliente cliente) {
@@ -50,7 +50,7 @@ public class Cliente {
         
         ArrayList<Cliente> f = new ArrayList<>();
 
-        Cliente fernando = new Cliente("Fernando", "fer.cas@upr.edu", 787);
+        Cliente fernando = new Cliente("Fernando", "fer.cas@upr.edu", "787");
         f.add(fernando);
         
         for(Cliente c : f) {
