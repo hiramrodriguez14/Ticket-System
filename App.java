@@ -156,11 +156,11 @@ public class App {
     private static int obtainPriceBySection(String section) {
         switch (section) {
             case "fieldlevel":
-                return 50;
+                return 300;
             case "mainlevel":
-                return 30;
+                return 120;
             case "grandstandlevel":
-                return 20;
+                return 45;
             default:
                 return 0;
         }
