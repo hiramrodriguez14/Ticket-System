@@ -8,7 +8,8 @@ public class EstadioTest {
     Cliente client3 = new Cliente("Sasuke Uchiha", "uchiha@upr.edu", "787-143-4567");
   @Test
     public void testReserveJointSeats() {
-
+       // noticed that if the user request a SeatNumber > 50 reserveJoinSeat is going to return false because it wont find a seats together because the user requestes a number greater that seatsPerRow
+       //a solution would be to put a limit of seats to the user
         // Pruebas de reservación en diferentes niveles
         assertEquals(true, stadium.reserveJointSeats(client1, "fieldlevel", 49));
         assertEquals(true, stadium.reserveJointSeats(client2, "fieldlevel", 2));
