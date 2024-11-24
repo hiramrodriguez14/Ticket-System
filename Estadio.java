@@ -55,7 +55,11 @@ public class Estadio {
                         reservations.put(client, new ArrayList<>(jointSeats));
                         reservationHistory.add(client.getName() + " reserved " + jointSeats);
                         actionsUndo.push("reserve");
-                        System.out.println("Reservation succesful: " + client.getName() + " - " + jointSeats);
+                        System.out.println("Reservation succesful for: " + client.getName());
+                        System.out.println("Reservation details: ");
+                        for(Asiento asiento : jointSeats) {
+                            System.out.println(asiento);
+                        }
                         return true;
                     }
                 } else {

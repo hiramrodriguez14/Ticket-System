@@ -51,7 +51,7 @@ public class App {
             // Mostrar disponibilidad de secciones y precios
             System.out.println("\nAvailable sections and seats price:");
             stadium.lookAvailability();
-            System.out.println("Prices: Field Level - $50, Main Level - $30, Grandstand Level - $20");
+            System.out.println("Prices: Field Level - $300, Main Level - $120, Grandstand Level - $45");
 
             // Preguntar la sección de interés
             System.out.println("\nIn what section would you like to reserve? ");
