@@ -1,5 +1,4 @@
 
-
 /**
  * The Cliente class represents a customer with personal details such as name, email, and phone number.
  * It provides methods to access and modify these details, as well as to compare Cliente objects for equality purposes.
