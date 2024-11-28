@@ -43,7 +43,7 @@ public class AppTest {
             System.out.print("Enter phone number: ");
             phoneNumber = scanner.nextLine();
             phoneNumber = phoneNumber.replace("-","");
-            if(phoneNumber.length() == 1){ //supposed to be 10
+            if(phoneNumber.length() == 10){ //supposed to be 10
                 validPhone = true;
             }else{
                System.out.println("Invalid phone number. Please enter a valid phone number with 10 digits.");
