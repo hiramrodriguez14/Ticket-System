@@ -133,7 +133,7 @@ public class AppTest {
 
                     if (confirmation.equalsIgnoreCase("no")) {
                         // cancel the reservation
-                        stadium.cancelReservation(client);
+                        stadium.cancelReservation(stadium.actionsUndo.pop());
                         System.out.println("Reservation cancelled. Returning to section selection...");
                         continue; // restart section selection
                     } else if (confirmation.equalsIgnoreCase("yes")) {
