@@ -7,7 +7,7 @@ public class Estadio {
     private Set<Asiento> availableSeats = new HashSet<>();
     private Map<Cliente, List<Asiento>> reservations = new HashMap<>();
     private LinkedList<Cliente> reservationHistory = new LinkedList<>();
-    private Stack<Cliente> actionsUndo = new Stack<>();
+    public Stack<Cliente> actionsUndo = new Stack<>();
     private Map<String, Queue<Cliente>> waitList = new HashMap<>();
 
     // constructor of the class Estadio
