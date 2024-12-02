@@ -10,7 +10,7 @@ public class Estadio {
     private Set<Asiento> availableSeats = new HashSet<>();
     private Map<Cliente, List<Asiento>> reservations = new HashMap<>();
     private LinkedList<Cliente> reservationHistory = new LinkedList<>();
-    private Stack<Cliente> actionsUndo = new Stack<>();
+    public Stack<Cliente> lastReservation = new Stack<>();
     private Map<String, Queue<Cliente>> waitList = new HashMap<>();
 
     public Estadio() {
@@ -63,7 +63,7 @@ public class Estadio {
                         for(Cliente clien : reservationHistory) {
                             System.out.println(clien.getName());
                         }
-                        actionsUndo.push(client);
+                        lastReservation.push(client); // add client por si desea cancelar
                         System.out.println("Reservation succesful: " + client.getName() + " - ");
                         for(Asiento asiento : jointSeats) {
                             System.out.println(asiento);
