@@ -66,6 +66,7 @@ public class Cliente {
     public void setPhoneNum(String phoneNum) {this.phoneNum = phoneNum;}
 
  
+    
     /**
      * Compares this Cliente object to another for equality.
      * Two Cliente objects are considered equal if they have the same name, email, and phone number.
@@ -73,13 +74,22 @@ public class Cliente {
      * @param cliente the Cliente object to compare to
      * @return true if the Cliente objects are equal, false otherwise
      */
-    public boolean equals(Cliente cliente) {
-        if((this.getEmail().equals(cliente.getEmail())) && (this.getName().equals(cliente.getName())) && (this.getPhoneNum().equals(cliente.getPhoneNum()))){
-           return true;
-        }
-        return false;
-    }
-
+   
+     @Override
+     public boolean equals(Object obj) {
+         if (this == obj) {
+             return true; // Same reference, they are equal
+         }
+         if (obj == null || getClass() != obj.getClass()) {
+             return false; // Null or different class, not equal
+         }
+         Cliente cliente = (Cliente) obj; // Cast to Cliente
+         // Compare relevant fields
+         return this.email.equals(cliente.email) &&
+                this.name.equals(cliente.name) &&
+                this.phoneNum.equals(cliente.phoneNum);
+     }
+     
     /**
      * Returns the hash code for the Cliente object.
      * The hash code is based on the email address of the customer.

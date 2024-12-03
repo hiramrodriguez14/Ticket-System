@@ -1,24 +1,33 @@
 import java.util.Scanner;
 
+/**
+ * The AppTest class implements a terminal-based user interface for managing 
+ * ticket reservations in a baseball stadium. It allows users to create clients, 
+ * make or cancel reservations, and view seat availability by interacting with 
+ * the Estadio class.
+ */
 public class AppTest {
 
-    // metodo para crear cliente usando informacion obtenida
+    /**
+     * Prompts the user to enter details to create a new Cliente object.
+     * Ensures that the entered email and phone number are valid.
+     *
+     * @return a new Cliente object created from the entered details
+     */
     private static Cliente newClient() {
 
         Scanner scanner = new Scanner(System.in);
-        boolean valid = true;
+       
 
-        // vars checking valid email and phone number
         boolean validEmail = false;
         boolean validPhone = false;
         String email = "";
         String phoneNumber = "";
 
-        // user enters name
         System.out.println("Enter name: ");
         String name = scanner.nextLine();
 
-        // user enters email
+        // Validate email
         while(!validEmail){
             System.out.print("Enter email: ");
             email = scanner.nextLine();
@@ -29,28 +38,32 @@ public class AppTest {
             }
         }
 
-        // user enters phone number
+        // Validate phone number
         while(!validPhone){
             System.out.print("Enter phone number: ");
             phoneNumber = scanner.nextLine();
             phoneNumber = phoneNumber.replace("-","");
-            if(phoneNumber.length() == 1){ //supposed to be 10
+            if(phoneNumber.length() == 10){ //supposed to be 10
                 validPhone = true;
             }else{
                System.out.println("Invalid phone number. Please enter a valid phone number with 10 digits.");
             }
         }
 
-        // crea cliente nuevo
         Cliente client = null;
         if(validEmail && validPhone) {
             client = new Cliente(name, email, phoneNumber);
         }
-
+     
         return client;
     }
 
-    // Método auxiliar para obtener el precio de acuerdo a la sección
+    /**
+     * Returns the price of seats based on the specified section.
+     *
+     * @param section the section of the stadium
+     * @return the price per seat in the specified section
+     */
     private static int obtainPriceBySection(String section) {
         switch (section) {
             case "fieldlevel":
@@ -64,25 +77,35 @@ public class AppTest {
         }
     }
 
+    /**
+     * Validates if the given section is one of the valid sections in the stadium.
+     *
+     * @param section the section name to validate
+     * @return true if the section is valid, false otherwise
+     */
     private static boolean isValidSection(String section) {
         return section.equals("fieldlevel") || section.equals("mainlevel") || section.equals("grandstandlevel");
     }
 
+
+    /**
+     * The main method that handles user interaction with the ticket reservation system.
+     */
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         Estadio stadium = new Estadio();
-        boolean valid = true;
+       
 
-        boolean running = true; // main program loop
-    while (running) {
+        boolean running = true; 
+        while (running) {
         System.out.println("Welcome to the ticket system for the baseball game at the stadium.");
         System.out.println("Would you like to make or cancel a reservation? (make/cancel)");
         String cancelOrReserve = scanner.nextLine();
 
         if (cancelOrReserve.equalsIgnoreCase("cancel")) {
-            // Logic for canceling a reservation can be added here
+            
             stadium.cancelReservation(newClient());
-            continue; // back to login
+            continue; 
         } else if (cancelOrReserve.equalsIgnoreCase("make")) {
             Cliente client = newClient();
 
@@ -92,7 +115,6 @@ public class AppTest {
                 stadium.lookAvailability();
                 System.out.println("Prices: Field Level - $300, Main Level - $120, Grandstand Level - $45");
                 System.out.println("\nIn what section would you like to reserve? ");
-
                 String section = scanner.nextLine();
                 section = section.toLowerCase();
                 section = section.replace(" ", "");
@@ -119,7 +141,6 @@ public class AppTest {
                     continue;
                 }
 
-                // attempt to reserve the seats
                 boolean reservationSuccessful = stadium.reserveSeats(client, section, seatsQuantity);
 
                 if (reservationSuccessful) {
@@ -127,7 +148,6 @@ public class AppTest {
                     System.out.println("Reservation successful!");
                     System.out.println("Section: " + section + ", Seats: " + seatsQuantity + ", Total Cost: $" + (price * seatsQuantity));
 
-                    // ask for confirmation
                     System.out.println("Are you sure about the reservation? (yes/no): ");
                     String confirmation = scanner.nextLine();
 
@@ -135,28 +155,28 @@ public class AppTest {
                         // cancel the reservation
                         stadium.cancelReservation(client);
                         System.out.println("Reservation cancelled. Returning to section selection...");
-                        continue; // restart section selection
+                        continue; 
                     } else if (confirmation.equalsIgnoreCase("yes")) {
                         System.out.println("Thank you! Your reservation is confirmed.");
-                        validSection = true; // Exit the section selection loop
+                        validSection = true; 
                     } else {
                         System.out.println("Invalid response. Assuming you want to keep the reservation.");
-                        validSection = true; // Exit the section selection loop
+                        validSection = true; 
                     }
 
-                    // After confirmation, return to the welcome menu
                     System.out.println("Returning to the main menu...");
-                    break; // Break out of the section loop and go back to the welcome menu
+                    break; 
                 } else {
                     System.out.println("There are no seats available in the section you selected. Would you like to be added to the waiting list? (yes/no): ");
                     String answer = scanner.nextLine();
                     if (answer.equalsIgnoreCase("yes")) {
-                        stadium.addAwaitList(client, section);
+                        ClienteWithSeats clien = new ClienteWithSeats(client.getName(), client.getEmail(), client.getPhoneNum(), seatsQuantity);
+                        stadium.addAwaitList(clien, section);
                         System.out.println("You have been added to the waiting list.");
                     } else {
                         System.out.println("Thank you for using the reservation system. Returning to the main menu...");
                     }
-                    break; // Break out of the section loop and return to login
+                    break;
                 }
             }
         } else {
